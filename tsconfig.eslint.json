@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["**/*.cjs", "**/*.js", "**/*.ts", "**/*.jsx", "**/*.tsx"],
+  "exclude": ["./*.js, ./*.cjs"]
+}

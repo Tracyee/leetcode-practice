@@ -1,58 +1,42 @@
-import UF from './UF';
-import QuickFindUF from './QuickFindUF';
-import prompt from 'prompt';
-
-prompt.message = '';
-
-// Start the prompt
-prompt.start();
-
-const schemaInitial: prompt.Schema = {
-  properties: {
-    size: {
-      message: 'size must be only integers',
-      required: true,
-      pattern: /^[0-9]*$/,
-    },
-  },
-};
-
-const schema: prompt.Schema = {
-  properties: {
-    from: {
-      message: 'from object must be only integers',
-      required: true,
-      pattern: /^[0-9]*$/,
-    },
-    to: {
-      message: 'to object must be only be integers',
-      required: true,
-      pattern: /^[0-9]*$/,
-    },
-  },
-};
-
-let uf: UF = new QuickFindUF(10);
-
 /** Dynamic connectivity client interface.
  * - Read in number of objects **N** from standard input.
  * - Repeat:
  *    - read in pair of integers from standard input
  *    - if they are not yet connected, connect them and print out pair
- * @param {boolean} [initial] enable initializing the number of objects if set to `true`
  */
-export const client = (initial: boolean = true) => {
-  prompt.get(initial ? schemaInitial : schema, function (err, result) {
-    if (initial) {
-      uf = new QuickFindUF(Number(result.size));
-    } else if (!uf.connected(Number(result.from), Number(result.to))) {
-      uf.union(Number(result.from), Number(result.to));
-      console.log(`${result.from} and ${result.to} are now connected.`);
-    } else {
-      console.log(`${result.from} and ${result.to} are already connected.`);
-    }
-    client(false);
-  });
-};
 
-client();
+import UF from './UF';
+import QuickFindUF from './QuickFindUF';
+import QuickUnionUF from './QuickUnionUF';
+import readline from 'readline';
+
+const parseIntegerPair = (input: string) => [
+  Number(input.split(/\s+/)[0]),
+  Number(input.split(/\s+/)[1]),
+];
+
+let uf: UF;
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+rl.once('line', input => {
+  // uf = new QuickFindUF(Number(input));
+  uf = new QuickUnionUF(Number(input));
+})
+  .on('line', input => {
+    const [p, q] = parseIntegerPair(input);
+    if (Number.isNaN(p) || Number.isNaN(q)) return;
+    if (!uf.connected(p, q)) {
+      uf.union(p, q);
+      // console.log(`${p} and ${q} are now connected.`); // TODO: remove this
+    } else {
+      // console.log(`${p} and ${q} are already connected.`); // TODO: remove this
+    }
+  })
+  .on('close', () => {
+    console.log(`# of components: ${uf.count()}`);
+    process.exit(0);
+  });

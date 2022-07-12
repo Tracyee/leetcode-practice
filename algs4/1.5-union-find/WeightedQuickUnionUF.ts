@@ -2,17 +2,20 @@ import UF from './UF';
 import IllegalArgumentException from './illegalArgumentException';
 
 /**
- * This implementation uses *quick union*.
- * The constructor takes &Theta;(*n*) time, where *n* is the number of sites.
- * The *union* and *find* operations take &Theta;(*n*) time in the worst case.
- * The *count* operation takes &Theta;(1) time.
+ * This implementation uses *weighted quick union by size*
+ *  (without path compression).
+ *  The constructor takes &Theta;(*n*), where *n*
+ *  is the number of elements.
+ *  The *union* and *find*
+ *  operations take &Theta;(log *n*) time in the worst
+ *  case. The *count* operation takes &Theta;(1) time.
  *
  * For additional documentation,
  * see [Section 1.5]("https://algs4.cs.princeton.edu/15uf") of
  * *Algorithms, 4th Edition* by Robert Sedgewick and Kevin Wayne.
  *
  */
-class QuickUnionUF implements UF {
+class WeightedQuickUnionUF implements UF {
   /**
    * The nodes of the union-find data structure, which is an integer array `id[]` of length `N`.
    *
@@ -20,6 +23,13 @@ class QuickUnionUF implements UF {
    * Two nodes are in the same set iff their share the same root.
    */
   private id: number[];
+
+  /**
+   * **Interpretation**: `size[i]` = number of elements in subtree rooted at `i`
+   *
+   * Needed to balance the trees by linking root of smaller tree to root of larger tree
+   */
+  private size: number[];
   private numSet: number; // number of sets
 
   /**
@@ -34,6 +44,7 @@ class QuickUnionUF implements UF {
     if (size < 0)
       throw new IllegalArgumentException('size must be greater than zero');
     this.id = Array.from(Array(size).keys());
+    this.size = Array(size).fill(1);
     this.numSet = size;
   }
 
@@ -41,9 +52,25 @@ class QuickUnionUF implements UF {
     // check if `p` and `q` have same root (depth of `p` and `q` array accesses)
     this.findRootIter(this.id[p]) === this.findRootIter(this.id[q]);
 
+  // takes time proportional to depth of p and q, where
+  // the depth of any node is at most lg N.
+  // **proof:** When does depth of x increase?
+  // Increases by 1 when tree T1 containing x is merged into another tree T2.
+  // - The size of the tree containing x at least doubles since | T2 | >= | T1 |.
+  // - The size of tree containing x can double at most lg N times
   union = (p: number, q: number) => {
-    // change root of `p` to point to root of `q` (depth of `p` and `q` array accesses)s
-    this.id[this.findRootIter(p)] = this.findRootIter(q);
+    const rootP = this.findRootIter(p);
+    const rootQ = this.findRootIter(q);
+    if (rootP == rootQ) return;
+
+    // make smaller root point to larger one
+    if (this.size[rootP] < this.size[rootQ]) {
+      this.id[rootP] = rootQ;
+      this.size[rootQ] += this.size[rootP];
+    } else {
+      this.id[rootQ] = rootP;
+      this.size[rootP] += this.size[rootQ];
+    }
     --this.numSet;
   };
 
@@ -85,4 +112,4 @@ class QuickUnionUF implements UF {
   };
 }
 
-export default QuickUnionUF;
+export default WeightedQuickUnionUF;

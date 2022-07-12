@@ -54,9 +54,9 @@ export const client = (initial: boolean = true) => {
       const [p, q] = parseIntegerPair(result.integerPair as string);
       if (!uf.connected(p, q)) {
         uf.union(p, q);
-        // console.log(`${p} and ${q} are now connected.`); // TODO: remove this
+        console.log(`${p} and ${q} are now connected.`); // TODO: remove this
       } else {
-        // console.log(`${p} and ${q} are already connected.`); // TODO: remove this
+        console.log(`${p} and ${q} are already connected.`); // TODO: remove this
       }
     }
     client(false);

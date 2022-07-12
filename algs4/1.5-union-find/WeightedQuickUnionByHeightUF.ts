@@ -2,17 +2,20 @@ import UF from './UF';
 import IllegalArgumentException from './illegalArgumentException';
 
 /**
- * This implementation uses *quick union*.
- * The constructor takes &Theta;(*n*) time, where *n* is the number of sites.
- * The *union* and *find* operations take &Theta;(*n*) time in the worst case.
- * The *count* operation takes &Theta;(1) time.
+ * This implementation uses *weighted quick union by height*
+ *  (without path compression).
+ *  The constructor takes &Theta;(*n*), where *n*
+ *  is the number of elements.
+ *  The *union* and *find*
+ *  operations take &Theta;(log *n*) time in the worst
+ *  case. The *count* operation takes &Theta;(1) time.
  *
  * For additional documentation,
  * see [Section 1.5]("https://algs4.cs.princeton.edu/15uf") of
  * *Algorithms, 4th Edition* by Robert Sedgewick and Kevin Wayne.
  *
  */
-class QuickUnionUF implements UF {
+class WeightedQuickUnionByHeightUF implements UF {
   /**
    * The nodes of the union-find data structure, which is an integer array `id[]` of length `N`.
    *
@@ -20,6 +23,13 @@ class QuickUnionUF implements UF {
    * Two nodes are in the same set iff their share the same root.
    */
   private id: number[];
+
+  /**
+   * **Interpretation**: `height[i]` = height of subtree rooted at i
+   *
+   * Needed to balance the trees by linking root of smaller tree to root of larger tree
+   */
+  private height: number[];
   private numSet: number; // number of sets
 
   /**
@@ -34,6 +44,7 @@ class QuickUnionUF implements UF {
     if (size < 0)
       throw new IllegalArgumentException('size must be greater than zero');
     this.id = Array.from(Array(size).keys());
+    this.height = Array(size).fill(0);
     this.numSet = size;
   }
 
@@ -41,9 +52,26 @@ class QuickUnionUF implements UF {
     // check if `p` and `q` have same root (depth of `p` and `q` array accesses)
     this.findRootIter(this.id[p]) === this.findRootIter(this.id[q]);
 
+  // takes time proportional to height of p and q, where
+  // the height of any node is at most lg N.
+  // **proof:** When does height of x increase?
+  // A union operation between nodes in different trees either
+  // leaves the height unchanged (if the two trees have different heights)
+  //  or increase the height of a tree by **one** (if the two trees have the same height)
+  // - prove by induction that that the size of the tree is at least 2^height.
+  //  Therefore, the height can increase at most lg n times.
   union = (p: number, q: number) => {
-    // change root of `p` to point to root of `q` (depth of `p` and `q` array accesses)s
-    this.id[this.findRootIter(p)] = this.findRootIter(q);
+    const rootP = this.findRootIter(p);
+    const rootQ = this.findRootIter(q);
+    if (rootP == rootQ) return;
+
+    // make shorter root point to taller one
+    if (this.height[rootP] < this.height[rootQ]) this.id[rootP] = rootQ;
+    else if (this.height[rootP] > this.height[rootQ]) this.id[rootQ] = rootP;
+    else {
+      this.id[rootP] = rootQ;
+      ++this.height[rootQ];
+    }
     --this.numSet;
   };
 
@@ -85,4 +113,4 @@ class QuickUnionUF implements UF {
   };
 }
 
-export default QuickUnionUF;
+export default WeightedQuickUnionByHeightUF;

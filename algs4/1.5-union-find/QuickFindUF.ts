@@ -31,7 +31,7 @@ class QuickFindUF implements UF {
   constructor(size: number) {
     if (size < 0)
       throw new IllegalArgumentException('size must be greater than zero');
-    this.id = [...Array(size).keys()];
+    this.id = Array.from(Array(size).keys());
     this.numSet = size;
   }
 

@@ -35,6 +35,11 @@ function lowestCommonAncestor(root: TreeNode | null, p: TreeNode | null, q: Tree
   
 };
 
+/** 
+  *      1
+  *    2   3
+  *   4 5 6 7
+  */
 const root = new TreeNode(1);
 root.left = new TreeNode(2);
 root.right = new TreeNode(3);
@@ -42,11 +47,7 @@ root.left.left = new TreeNode(4);
 root.left.right = new TreeNode(5);
 root.right.left = new TreeNode(6);
 root.right.right = new TreeNode(7);
-console.log("LCA(4, 5) = " +
-  findlCA(4, 5).val);
-console.log("LCA(4, 6) = " +
-  findlCA(4, 6).val);
-console.log("LCA(3, 4) = " +
-  findlCA(3, 4).val);
-console.log("LCA(2, 4) = " +
-  findlCA(2, 4).val);
+console.log("LCA(4, 5) = " + lowestCommonAncestor(root, root.left.left, root.left.right).val);
+console.log("LCA(4, 6) = " + lowestCommonAncestor(root, root.left.left, root.right.left).val);
+console.log("LCA(3, 4) = " + lowestCommonAncestor(root, root.right, root.left.left).val);
+console.log("LCA(2, 4) = " + lowestCommonAncestor(root, root.left, root.left.left).val);

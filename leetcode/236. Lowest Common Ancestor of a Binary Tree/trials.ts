@@ -10,29 +10,35 @@ class TreeNode {
          this.left = (left===undefined ? null : left)
          this.right = (right===undefined ? null : right)
      }
- }
+}
  
 
 function lowestCommonAncestor(root: TreeNode | null, p: TreeNode | null, q: TreeNode | null): TreeNode | null {
   
-  //base case
-  if (root === null || root === p || root === q) {
+  // base case: find p or q in root
+  if (root === p || root === q) {
     return root;
   }
+
+  if (root === null) return null;
+
   const left = lowestCommonAncestor(root.left, p, q);
+  // console.log("left: " + left?.val);
   const right = lowestCommonAncestor(root.right, p, q);
+  // console.log("right: " + right?.val);
   
-  //result
-  if (left === null) {
-    return right;
-  }
-  else if (right === null) {
-    return left;
-  }
-  else { //both left and right are not null, we found our result
-    return root;
-  }
-  
+  // find both p and q with root
+  if (left !== null && right !== null) return root;
+
+  // find p or q in the left sub-tree 
+  if (left !== null) return left;
+
+  // find p or q in the right sub-tree
+  if (right !== null) return right;
+
+  // neither p nor q are found
+  return null;
+
 };
 
 /** 

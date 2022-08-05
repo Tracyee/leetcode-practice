@@ -1,3 +1,5 @@
+import { TreeNode } from './trials';
+
 function lca(r: TreeNode | null, p: TreeNode | null, q: TreeNode | null): TreeNode | null {
   
   let found = false;

@@ -136,6 +136,6 @@ fun lca (root, p, q) {
 }
 ```
 
-Hence, we want the base cases to i. return `null` when lca didn't find either `p` or `q`, and ii. return `p` or `q` when the root happens to be `p` or `q`. 
+Hence, we want the base cases to return `null` when lca didn't find either `p` or `q`, and otherwise return `p` or `q` when they are found.
 
 Mission accomplished.

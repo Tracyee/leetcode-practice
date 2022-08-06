@@ -50,15 +50,14 @@ function inorderTraversalIter(root: TreeNode | null): number[] {
   let current: TreeNode | null = root;
 
   while (stack.length > 0 || current) {
-    if (current) {
+    while (current) {
       stack.push(current);
       // res.push(current.val)  // preorder traversal
       current = current.left;
-    } else {
-      current = stack.pop() as TreeNode;
-      res.push(current.val)  // inorder traversal
-      current = current.right
-    }
+    } 
+    current = stack.pop() as TreeNode;
+    res.push(current.val)  // inorder traversal
+    current = current.right
   }
 
   return res;

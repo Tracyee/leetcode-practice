@@ -1,4 +1,33 @@
 {
-    "editor.tabSize": 2,
-    "editor.formatOnSave": true
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.glyphMargin": false,
+  // "editor.lineNumbers": "off",
+  "workbench.colorCustomizations": {
+    "[SynthWave '84]": {
+      "sideBar.background": "#17142f",
+      "sideBar.border": "#313131",
+      "sideBarSectionHeader.background": "#1a0d26",
+      "sideBarSectionHeader.border": "#292929",
+      "menubar.selectionBackground": "#1c1147",
+      "menu.background": "#1a0d26",
+      "titleBar.activeBackground": "#1a0d26",
+      "statusBar.background": "#1a0d26",
+      "activityBar.background": "#0f0c20",
+      "activityBar.activeBackground": "#1d1d1d",
+      "editorPane.background": "#1a1248",
+      "editorGutter.background": "#1a1248",
+      "tab.activeBackground": "#000",
+      "tab.activeBorder": "#616161",
+      "tab.inactiveModifiedBorder": "#616161",
+      "tab.inactiveBackground": "#1a1919",
+      "editor.background": "#0f0d26",
+      "scrollbarSlider.background": "#303030",
+      "scrollbarSlider.activeBackground": "#222222",
+      "scrollbarSlider.hoverBackground": "#282828",
+      "list.activeSelectionBackground": "#0f0c20",
+      "list.hoverBackground": "#110e25",
+      "list.focusBackground": "#0f0c20"
+    }
+  }
 }

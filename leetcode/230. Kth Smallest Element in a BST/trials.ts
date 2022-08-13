@@ -26,6 +26,8 @@ function kthSmallest(root: TreeNode | null, k: number): number {
     if (count === k) return current.val;
     current = current.right;
   }
+
+  return -1; // k too large
 }
 
 /**

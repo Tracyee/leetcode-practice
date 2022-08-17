@@ -28,6 +28,8 @@
  * The canonical element of a set can change only when the set
  * itself changes during a call to *union*; it cannot
  * change during a call to either *find* or *count*.
+ *
+ * @author Yi Cai
  */
 export default interface UF {
   /**

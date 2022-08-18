@@ -4,6 +4,7 @@ import NoSuchElementException from './noSuchElementException';
 class PriorityQueue<Key> implements MaxPQ<Key> {
   private pq: Key[]; // store items at indices **1** to n
   private n: number; // number of items on priority queue
+  compareFn?: (a: Key, b: Key) => number;
 
   /**
    * Initializes an empty priority queue, or a priority queue from the array of keys.
@@ -11,9 +12,10 @@ class PriorityQueue<Key> implements MaxPQ<Key> {
    *
    * @param  keys the array of keys
    */
-  constructor(keys?: Key[]) {
+  constructor(keys?: Key[], compareFn?: (a: Key, b: Key) => number) {
     this.pq = [];
     this.n = 0;
+    this.compareFn = compareFn;
 
     if (keys) {
       this.n = keys.length;
@@ -82,7 +84,7 @@ class PriorityQueue<Key> implements MaxPQ<Key> {
    * until we reach a node with both children smaller, or the bottom.
    * @param k the array index of the node to sink
    */
-  private sink(k: number) {
+  private sink = (k: number) => {
     while (2 * k <= this.n) {
       let j = 2 * k;
       if (j < this.n && this.less(j, j + 1)) j++;
@@ -90,14 +92,15 @@ class PriorityQueue<Key> implements MaxPQ<Key> {
       this.exch(k, j);
       k = j;
     }
-  }
+  };
 
   /***************************************************************************
    * Helper functions for compares and swaps.
    ***************************************************************************/
 
   private less = (i: number, j: number) => {
-    return this.pq[i] < this.pq[j];
+    if (!this.compareFn) return this.pq[i] < this.pq[j];
+    return this.compareFn(this.pq[i], this.pq[j]) < 0;
   };
 
   private exch = (i: number, j: number) => {
@@ -109,14 +112,14 @@ class PriorityQueue<Key> implements MaxPQ<Key> {
    ***************************************************************************/
 
   [Symbol.iterator]() {
-    return new HeapIterator(this.pq);
+    return new HeapIterator(this.pq, this.compareFn);
   }
 }
 
 class HeapIterator<Key> implements Iterator<Key> {
   private copy: PriorityQueue<Key>;
-  constructor(pq: Key[]) {
-    this.copy = new PriorityQueue<Key>();
+  constructor(pq: Key[], compareFn?: (a: Key, b: Key) => number) {
+    this.copy = new PriorityQueue<Key>([], compareFn);
     for (let i = 1; i < pq.length; i++) this.copy.insert(pq[i]);
   }
 
